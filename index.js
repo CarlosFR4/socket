@@ -22,8 +22,6 @@ ns.on('connection', socket => {
 
     const token = socket.request._query['room']
 
-    // io.clients((error, clients) => console.log(clients))
-
     jwt.verify(token, process.env.JWT_SECRET_KEY, (error, decoded) => {
         if (error || !('user_claims' in decoded)) {
             console.error('/+++ ERROR +++/')
@@ -43,24 +41,23 @@ ns.on('connection', socket => {
     
             socket.on('newVisit', msg => {
                 event++
-                // io.clients((error, clients) => console.log(clients))
-                ns.to(room).emit('newVisit', msg)
+                socket.broadcast.to(room).emit('newVisit', msg)
                 log('visit added', socket.id, socket.conn.remoteAddress, room, msg)
                 console.log(event)
             })
     
             socket.on('updateVisit', msg => {
-                ns.to(room).emit('updateVisit', msg)
+                socket.broadcast.to(room).emit('updateVisit', msg)
                 log('visit updated', socket.id, socket.conn.remoteAddress, room, msg)
             })
     
             socket.on('newCheck', msg => {
-                ns.to(room).emit('newCheck', msg)
+                socket.broadcast.to(room).emit('newCheck', msg)
                 log('check added', socket.id, socket.conn.remoteAddress, room, msg)
             })
     
             socket.on('updateCheck', msg => {
-                ns.to(room).emit('updateCheck', msg)
+                socket.broadcast.to(room).emit('updateCheck', msg)
                 log('check updated', socket.id, socket.conn.remoteAddress, room, msg)
             })
     
