@@ -14,13 +14,15 @@ function log(action, socketId, ip, room, message) {
     console.log(`${Date().toString()}.`)
     console.log('**********************')
 }
-
+let event = 0
 ns.on('connection', socket => {
     console.log('==== create connection ====')
     console.log(`sender: ${socket.id}, IP: ${socket.conn.remoteAddress}`)
     console.log('===========================')
 
     const token = socket.request._query['room']
+
+    // io.clients((error, clients) => console.log(clients))
 
     jwt.verify(token, process.env.JWT_SECRET_KEY, (error, decoded) => {
         if (error || !('user_claims' in decoded)) {
@@ -40,8 +42,11 @@ ns.on('connection', socket => {
             socket.join(room)
     
             socket.on('newVisit', msg => {
+                event++
+                // io.clients((error, clients) => console.log(clients))
                 ns.to(room).emit('newVisit', msg)
                 log('visit added', socket.id, socket.conn.remoteAddress, room, msg)
+                console.log(event)
             })
     
             socket.on('updateVisit', msg => {

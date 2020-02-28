@@ -1,0 +1,29 @@
+version: '3.7'
+services:
+  socket:
+    container_name: socket
+    image: sonigas-ns_web:latest
+    environment:
+      PORT: 3000
+      JWT_SECRET_KEY: 3ae03a298434a5a187b3d6a52360853b3c18b2cf4b3828f0
+    ports:
+      - 3000:3000
+    build:
+      context: .
+      dockerfile: Dockerfile
+    deploy:
+      resources:
+        limits:
+          cpus: '1.5'
+          memory: '1.5g'
+  web:
+    container_name: 'react'
+    image: react-docker
+    ports:
+      - 8000:80
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: '128m'
+    
